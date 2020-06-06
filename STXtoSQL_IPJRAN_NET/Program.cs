@@ -15,12 +15,14 @@ namespace STXtoSQL_IPJRAN_NET
         {
             Logger.LogWrite("MSG", "Start: " + DateTime.Now.ToString());
 
-            // Args will change based on STXtoSQL program goal
             string date1 = "";
             string date2 = "";
+
+            // Declare and defaults
             int odbcCnt = 0;
             int insertCnt = 0;
             int importCnt = 0;
+            int dupCnt = 0;
 
             // Get args
             try
@@ -100,13 +102,27 @@ namespace STXtoSQL_IPJRAN_NET
                     Logger.LogWrite("EXC", ex);
                     Logger.LogWrite("MSG", "Return");
                     return;
-                    //Console.WriteLine(ex.Message.ToString());
+                }
+
+                /*
+                 * Jobs that contain more than one item to consume will have duplicate Jobs in IPJRAN. 
+                 * Need to Sum(Lbs) of duplicate jobs into one row and delete the other rows.
+                 */
+                try
+                {
+                    dupCnt = objSQL.Clean_Dup_Jobs_IMPORT();
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogWrite("EXC", ex);
+                    Logger.LogWrite("MSG", "Return");
+                    return;
                 }
 
                 // Call SP to put IMPORT IPJRAN table data into WIP IPJRAN table
                 try
                 {
-                    //insertCnt = objSQL.Write_IMPORT_to_IPJRAN(date1, date2);
+                    insertCnt = objSQL.Write_IMPORT_to_IPJRAN(date1, date2);
                 }
                 catch (Exception ex)
                 {
@@ -116,7 +132,7 @@ namespace STXtoSQL_IPJRAN_NET
                     //Console.WriteLine(ex.Message.ToString());
                 }
 
-                Logger.LogWrite("MSG", "Range=" + date1 + ":" + date2 + " ODBC/IMPORT/INSERT=" + odbcCnt.ToString() + ":" + importCnt.ToString() + ":" + insertCnt.ToString());
+                Logger.LogWrite("MSG", "Range=" + date1 + ":" + date2 + " ODBC/IMPORT/DUPS/INSERT=" + odbcCnt.ToString() + ":" + importCnt.ToString() + ":" + dupCnt.ToString() + ":" + insertCnt.ToString());
             }
             else
                 Logger.LogWrite("MSG", "No data");

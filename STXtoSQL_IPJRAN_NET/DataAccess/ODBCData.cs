@@ -28,7 +28,7 @@ namespace STXtoSQL.DataAccess
                                         MONTH(ran_actst_ltts) as mn,DAY(ran_actst_ltts) as dy,YEAR(ran_actst_ltts) as yr
                                         from ipjran_rec
 	                                    where ran_whs = 'SW' and ran_rec_no != 0 and ran_pwc in('60S','72S','CTL','MSB','SHR')
-                                        and ran_actst_ltts >= '" + date1 + "' and ran_actst_ltts <= '" + date2 + "'";
+                                        and ran_actvy_dt >= '" + date1 + "' and ran_actvy_dt <= '" + date2 + "'";
 
 
 
@@ -47,7 +47,7 @@ namespace STXtoSQL.DataAccess
                         b.wgt = Convert.ToInt32(rdr["ran_tot_wgt"]);
                         b.actst = rdr["ran_actst_ltts"].ToString();
                         b.pcs = Convert.ToInt32(rdr["ran_tot_pcs"]);
-                        b.run = Convert.ToInt32(rdr["ran_tot_run"]);
+                        b.run = Convert.ToInt32(rdr["ran_tot_run_tm"]);
                         b.mn = Convert.ToInt32(rdr["mn"]);
                         b.dy = Convert.ToInt32(rdr["dy"]);
                         b.yr = Convert.ToInt32(rdr["yr"]);

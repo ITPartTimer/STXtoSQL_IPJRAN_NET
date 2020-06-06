@@ -9,6 +9,7 @@ namespace STXtoSQL.DataAccess
 {
     class SQLData : Helpers
     {
+        // Insert list of IPJRAN from STRATIX into IMPORT
         public int Write_IPJRAN_IMPORT(List<IPJRAN> lstIPJRAN)
         {
             // Returning rows inserted into IMPORT
@@ -43,15 +44,15 @@ namespace STXtoSQL.DataAccess
                 try
                 {
                     // Change Text to Insert data into IMPORT
-                    cmd.CommandText = "INSERT INTO ST_IMPORT_tbl_IPJRAN (ran_whs,ran_rec_pfx,ran_rec_no,ran_pwc,ran_tot_wgt,ran_actst_ltts,ran_tot_pcs,ran_tot_run,actvy_mn,actvy_dy,actvy_yr) " +
-                                        "VALUES (@whs,@pfx,@no,@pwc,@wgt,@actst,@pcs,@run,@actvy_dt,@actvy_mn,@actvy_dy,@actvy_yr)";
+                    cmd.CommandText = "INSERT INTO ST_IMPORT_tbl_IPJRAN (ran_whs,ran_rec_pfx,ran_rec_no,ran_pwc,ran_tot_wgt,ran_actst_ltts,ran_tot_pcs,ran_tot_run_tm,actvy_mn,actvy_dy,actvy_yr) " +
+                                        "VALUES (@whs,@pfx,@no,@pwc,@wgt,@actst,@pcs,@run,@actvy_mn,@actvy_dy,@actvy_yr)";
 
                     cmd.Parameters.Add("@whs", SqlDbType.VarChar);
                     cmd.Parameters.Add("@pfx", SqlDbType.VarChar);
                     cmd.Parameters.Add("@no", SqlDbType.Int);
                     cmd.Parameters.Add("@pwc", SqlDbType.VarChar);
                     cmd.Parameters.Add("@wgt", SqlDbType.Int);
-                    cmd.Parameters.Add("@actst", SqlDbType.VarChar);
+                    cmd.Parameters.Add("@actst", SqlDbType.DateTime);
                     cmd.Parameters.Add("@pcs", SqlDbType.Int);
                     cmd.Parameters.Add("@run", SqlDbType.Int);
                     cmd.Parameters.Add("@actvy_mn", SqlDbType.Int);
@@ -64,13 +65,13 @@ namespace STXtoSQL.DataAccess
                         cmd.Parameters[1].Value = s.pfx;
                         cmd.Parameters[2].Value = Convert.ToInt32(s.no);
                         cmd.Parameters[3].Value = s.pwc;
-                        cmd.Parameters[3].Value = Convert.ToInt32(s.wgt);
-                        cmd.Parameters[4].Value = Convert.ToInt32(s.actst);
-                        cmd.Parameters[3].Value = Convert.ToInt32(s.pcs);
-                        cmd.Parameters[3].Value = Convert.ToInt32(s.run);
-                        cmd.Parameters[5].Value = Convert.ToInt32(s.mn);
-                        cmd.Parameters[6].Value = Convert.ToInt32(s.dy);
-                        cmd.Parameters[7].Value = Convert.ToInt32(s.yr);
+                        cmd.Parameters[4].Value = Convert.ToInt32(s.wgt);
+                        cmd.Parameters[5].Value = Convert.ToDateTime(s.actst);
+                        cmd.Parameters[6].Value = Convert.ToInt32(s.pcs);
+                        cmd.Parameters[7].Value = Convert.ToInt32(s.run);
+                        cmd.Parameters[8].Value = Convert.ToInt32(s.mn);
+                        cmd.Parameters[9].Value = Convert.ToInt32(s.dy);
+                        cmd.Parameters[10].Value = Convert.ToInt32(s.yr);
 
                         cmd.ExecuteNonQuery();
                     }
@@ -86,7 +87,7 @@ namespace STXtoSQL.DataAccess
                 try
                 {
                     // Get count of rows inserted into IMPORT
-                    cmd.CommandText = "SELECT COUNT(no) from ST_IMPORT_tbl_IPJRAN";
+                    cmd.CommandText = "SELECT COUNT(ran_rec_no) from ST_IMPORT_tbl_IPJRAN";
                     r = Convert.ToInt32(cmd.ExecuteScalar());
                 }
                 catch (Exception)
@@ -108,6 +109,7 @@ namespace STXtoSQL.DataAccess
             return r;
         }
 
+        // Insert values from IMPORT into WIP IPJRAN
         public int Write_IMPORT_to_IPJRAN(string date1, string date2)
         {
             // Returning rows inserted into IMPORT
@@ -129,6 +131,45 @@ namespace STXtoSQL.DataAccess
 
                 AddParamToSQLCmd(cmd, "@date1", SqlDbType.DateTime, 4, ParameterDirection.Input, date1);
                 AddParamToSQLCmd(cmd, "@date2", SqlDbType.DateTime, 4, ParameterDirection.Input, date2);
+                AddParamToSQLCmd(cmd, "@rows", SqlDbType.Int, 8, ParameterDirection.Output);
+
+                cmd.ExecuteNonQuery();
+
+                r = Convert.ToInt32(cmd.Parameters["@rows"].Value);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                // No matter what close and dispose of the connetion
+                conn.Close();
+                conn.Dispose();
+            }
+
+            return r;
+        }
+
+        // Clean up duplicate Jobs in IMPORT IPJRAN
+        public int Clean_Dup_Jobs_IMPORT()
+        {
+            int r = 0;
+
+            SqlConnection conn = new SqlConnection(STRATIXDataConnString);
+
+            try
+            {
+                conn.Open();
+
+                SqlCommand cmd = new SqlCommand();
+
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Connection = conn;
+
+                // Call SP to copy IMPORT to IPJRAN table.  Return rows inserted.
+                cmd.CommandText = "ST_IMPORT_proc_IPJRAN_Clean_Dup_Jobs";
+
                 AddParamToSQLCmd(cmd, "@rows", SqlDbType.Int, 8, ParameterDirection.Output);
 
                 cmd.ExecuteNonQuery();
