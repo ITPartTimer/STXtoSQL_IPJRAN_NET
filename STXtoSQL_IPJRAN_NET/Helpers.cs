@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -36,9 +37,10 @@ namespace STXtoSQL
         {
             get
             {
-                //string dsn = ConfigurationManager.AppSettings.Get("DSN");
+                // DSN stored in App.config
+                string dsn = ConfigurationManager.AppSettings.Get("DSN");
 
-                _ODBCDataConnString = "DSN=Invera;UID=livcalod;Pwd=livcalod";
+                _ODBCDataConnString = "DSN=" + dsn + ";UID=livcalod;Pwd=livcalod";
 
                 if (string.IsNullOrEmpty(_ODBCDataConnString))
                 {

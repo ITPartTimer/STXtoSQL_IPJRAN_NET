@@ -62,7 +62,6 @@ namespace STXtoSQL_IPJRAN_NET
                 Logger.LogWrite("EXC", ex);
                 Logger.LogWrite("MSG", "Return");
                 return;
-                //Console.WriteLine(ex.Message.ToString());
             }
 
             #region FromSTRATIX
@@ -80,7 +79,6 @@ namespace STXtoSQL_IPJRAN_NET
                 Logger.LogWrite("EXC", ex);
                 Logger.LogWrite("MSG", "Return");
                 return;
-                //Console.WriteLine(ex.Message.ToString());
             }
             #endregion
 
@@ -129,7 +127,6 @@ namespace STXtoSQL_IPJRAN_NET
                     Logger.LogWrite("EXC", ex);
                     Logger.LogWrite("MSG", "Return");
                     return;
-                    //Console.WriteLine(ex.Message.ToString());
                 }
 
                 Logger.LogWrite("MSG", "Range=" + date1 + ":" + date2 + " ODBC/IMPORT/DUPS/INSERT=" + odbcCnt.ToString() + ":" + importCnt.ToString() + ":" + dupCnt.ToString() + ":" + insertCnt.ToString());
@@ -141,8 +138,8 @@ namespace STXtoSQL_IPJRAN_NET
             #endregion
 
             // Testing
-            Console.WriteLine("Press key to exit");
-            Console.ReadKey();
+            //Console.WriteLine("Press key to exit");
+            //Console.ReadKey();
         }
     }
 }
