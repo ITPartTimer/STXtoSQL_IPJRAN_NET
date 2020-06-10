@@ -16,8 +16,9 @@ namespace STXtoSQL
         {
             get
             {
-                //_STRATIXDataConnString = "Data Source=VC-030\\SQLDEV2014VC030;Initial Catalog=STRATIXData;User ID=DataImporter;Password=cX63o4qd";
-                _STRATIXDataConnString = "Data Source=VC-030\\SQLDEV2014VC030;Initial Catalog=STRATIXData;Integrated Security=SSPI";              
+                string sql = Environment.GetEnvironmentVariable("sysSQLServer");
+                _STRATIXDataConnString = "Data Source=VC-030\\SQLDEV2014VC030;Initial Catalog=STRATIXData;Integrated Security=SSPI";
+                _STRATIXDataConnString = "Data Source=" + sql + ";Initial Catalog=STRATIXData;Integrated Security=SSPI";
 
                 if (string.IsNullOrEmpty(_STRATIXDataConnString))
                 {
@@ -37,10 +38,12 @@ namespace STXtoSQL
         {
             get
             {
-                // DSN stored in App.config
-                string dsn = ConfigurationManager.AppSettings.Get("DSN");
+                // DSN stored in System Environment variables
+                string dsn = Environment.GetEnvironmentVariable("sysStratixDSN"); 
+                string uid = Environment.GetEnvironmentVariable("sysStratixUID");
+                string pwd = Environment.GetEnvironmentVariable("sysStratixPWD");
 
-                _ODBCDataConnString = "DSN=" + dsn + ";UID=livcalod;Pwd=livcalod";
+                _ODBCDataConnString = "DSN=" + dsn + ";UID=" + uid + ";Pwd=" + pwd;
 
                 if (string.IsNullOrEmpty(_ODBCDataConnString))
                 {
