@@ -25,7 +25,7 @@ namespace STXtoSQL.DataAccess
                 OdbcCommand cmd = conn.CreateCommand();
 
                 cmd.CommandText = @"select ran_whs,ran_rec_pfx,ran_rec_no,ran_pwc,ran_tot_wgt,ran_actst_ltts,ran_tot_pcs,ran_tot_run_tm,
-                                        MONTH(ran_actst_ltts) as mn,DAY(ran_actst_ltts) as dy,YEAR(ran_actst_ltts) as yr
+                                        DATE_PART('month',ran_actst_ltts) as mn,DATE_PART('day',ran_actst_ltts) as dy,DATE_PART('year',ran_actst_ltts) as yr
                                         from ipjran_rec
 	                                    where ran_whs = 'SW' and ran_rec_no != 0 and ran_pwc in('60S','72S','CTL','MSB','SHR')
                                         and ran_actvy_dt >= '" + date1 + "' and ran_actvy_dt <= '" + date2 + "'";

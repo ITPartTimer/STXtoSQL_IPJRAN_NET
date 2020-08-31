@@ -37,16 +37,27 @@ namespace STXtoSQL_IPJRAN_NET
                 }
                 else
                 {
-                    /*
-                     * No args
-                     * Date range will be 1st of month to yesterday
-                     */
+                    // No args = current month to yesterday
                     DateTime dtToday = DateTime.Today;
-
-                    DateTime dtFirst = new DateTime(dtToday.Year, dtToday.Month, 1);
+                    DateTime dtFirst;
 
                     /*
-                     * Need date part of datetime.
+                     * If 1st day of month, start from the last day of previous month
+                     * or that day will be missed in the report
+                     * ex: Today os 8/1, dtFirst should be 7/31
+                     */
+                    if (DateTime.Today.Day == 1)
+                    {
+                        // Get number of days in previous month
+                        int dtDaysInMonth = DateTime.DaysInMonth(dtToday.Year, dtToday.Month - 1);
+                        // Create new DateTime using last month and last day of last month
+                        dtFirst = new DateTime(dtToday.Year, dtToday.Month - 1, dtDaysInMonth);
+                    }
+                    else
+                        dtFirst = new DateTime(dtToday.Year, dtToday.Month, 1);
+
+                    /*
+                     * Need one date part of datetime.
                      * Time and date are separated by a space, so split the string
                      * and only use the 1st element.
                      */

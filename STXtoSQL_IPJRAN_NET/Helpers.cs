@@ -17,8 +17,9 @@ namespace STXtoSQL
             get
             {
                 string sql = Environment.GetEnvironmentVariable("sysSQLServer");
-                _STRATIXDataConnString = "Data Source=VC-030\\SQLDEV2014VC030;Initial Catalog=STRATIXData;Integrated Security=SSPI";
-                _STRATIXDataConnString = "Data Source=" + sql + ";Initial Catalog=STRATIXData;Integrated Security=SSPI";
+                string cat = ConfigurationManager.AppSettings.Get("InitCat");
+
+                _STRATIXDataConnString = "Data Source=" + sql + ";Initial Catalog=" + cat + ";Integrated Security=SSPI";
 
                 if (string.IsNullOrEmpty(_STRATIXDataConnString))
                 {
